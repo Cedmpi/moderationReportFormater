@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Message Formatter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-mode">
+  <div class="container">
+    <h1 class="border-b" style="text-align: center; width: max-content;">Message Formatter</h1>
+
+    <div class="border-b">
+      <h3 class="border-b" style="width: max-content;">Select Channel:</h3>
+      <div class="container-radio">
+        <span>
+          <input type="radio" id="Carli" name="channel" value="Carli" onchange="formatAndDisplayMessage()">
+          <label for="Carli">Carli</label>
+        </span>
+        <span>
+          <input type="radio" id="AiHeroes" name="channel" value="AiHeroes" onchange="formatAndDisplayMessage()">
+          <label for="AiHeroes">AiHeroes</label>
+        </span>
+        <span>
+          <input type="radio" id="Santa" name="channel" value="Santa" onchange="formatAndDisplayMessage()">
+          <label for="Santa">Santa</label>
+        </span>
+        <span>
+          <input type="radio" id="TrumpOrBiden" name="channel" value="TrumpOrBiden"
+            onchange="formatAndDisplayMessage()">
+          <label for="TrumpOrBiden">TrumpBiden</label>
+        </span>
+        <span>
+          <input type="radio" id="Jesus" name="channel" value="Jesus" onchange="formatAndDisplayMessage()">
+          <label for="Jesus">Jesus</label>
+        </span>
+      </div>
+    </div>
+
+    <div class="container-text-area">
+      <label for="inputMessage">Input Message:</label>
+      <textarea class="dark-mode" id="inputMessage" rows="4" cols="50" oninput="formatAndDisplayMessage()"></textarea>
+
+      <button class="button" id="pasteClipboard">Paste from Clipboard</button>
+
+    </div>
+
+    <div class="container-text-area">
+      <label for="outputMessage">Output Message:</label>
+      <textarea class="dark-mode" id="outputMessage" rows="6" cols="50" readonly></textarea>
+
+      <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
+    </div>
+
+    <div style="position: relative;">
+      <div id="toastMessage">Copied to clipboard!</div>
+    </div>
+
+    <div>
+      <hr>
+      <p>(Only outputs if message has text that match for Channel, User and Message.)</p>
+      <p>[Example Text Message] <br> 6:16 DeluluBroccoliConnoisseur: Dinos ate broccoli 🥦🦕 true and real.</p>
+      Output message:
+
+      <ul style="list-style: none;">
+        <li>Channel: [Select Channel]</li>
+        <li>User: DeluluBroccoliConnoisseur</li>
+        <li>Message: Dinos ate broccoli 🥦🦕 true and real.</li>
+      </ul>
+
+    </div>
+
+    <div>
+      <label for="darkModeToggle">Dark Mode:</label>
+      <input type="checkbox" id="darkModeToggle" checked>
+    </div>
+  </div>
+</body>
+
+<script>
+  function formatAndDisplayMessage() {
+    var message = document.getElementById('inputMessage').value;
+    var channels = document.getElementsByName('channel');
+    var selectedChannel = '';
+    for (var channel of channels) {
+      if (channel.checked) {
+        selectedChannel = channel.value;
+        break;
+      }
+    }
+
+    // Use regex to extract user and message, and remove timestamp if present
+    var regex = /(?:\d+:\d+\s)?([^:]+): (.+)/;
+    var match = message.match(regex);
+    if (match) {
+      var user = match[1].trim();
+      var text = match[2].trim();
+      var formattedMessage = 'Channel: ' + selectedChannel + '\nUser: ' + user + '\nMessage: ' + text;
+      document.getElementById('outputMessage').value = formattedMessage;
+      if (formattedMessage.includes('Channel:') && formattedMessage.includes('User:') && formattedMessage.includes('Message:')) {
+        copyToClipboard();
+      }
+    } else {
+      document.getElementById('outputMessage').value = '';
+    }
+  }
+
+  function copyToClipboard() {
+    var outputMessage = document.getElementById('outputMessage');
+    outputMessage.select();
+    document.execCommand('copy');
+
+    showToastMessage();
+
+  }
+  async function pasteFromClipboard() {
+    const textarea = document.getElementById('inputMessage');
+
+    // Use the Clipboard API to read text from the clipboard
+    const text = await navigator.clipboard.readText();
+    textarea.value = text;
+    formatAndDisplayMessage();
+  }
+
+  const pasteClipboardButton = document.getElementById('pasteClipboard');
+  if (!navigator.clipboard || !navigator.clipboard.readText) {
+    pasteClipboardButton.style.display = "none";
+  } else {
+    pasteClipboardButton.addEventListener('click', pasteFromClipboard);
+  }
+
+  function toggleDarkMode() {
+    const isChecked = document.getElementById('darkModeToggle').checked;
+    const textareas = document.querySelectorAll('textarea');
+
+    if (isChecked) {
+      document.body.classList.remove('light-mode');
+      document.body.classList.add('dark-mode');
+
+      textareas.forEach(textarea => {
+        textarea.classList.remove('light-mode');
+        textarea.classList.add('dark-mode');
+      });
+    } else {
+      document.body.classList.remove('dark-mode');
+      document.body.classList.add('light-mode');
+
+      textareas.forEach(textarea => {
+        textarea.classList.remove('dark-mode');
+        textarea.classList.add('light-mode');
+      });
+    }
+  }
+  document.getElementById('darkModeToggle').addEventListener('change', toggleDarkMode)
+
+  function showToastMessage() {
+    var toast = document.getElementById('toastMessage');
+    toast.className = "show";
+    setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000)
+  }
+
+
+
+</script>
+
+</html>
