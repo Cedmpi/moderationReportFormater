@@ -10,30 +10,31 @@
 
 <body class="dark-mode">
   <div class="container">
-    <h1 class="border-b" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Message Formatter</h1>
+    <h1 class="border-b" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Message
+      Formatter</h1>
 
     <div class="border-b">
       <h3 class="border-b" style="width: max-content;">Select Channel:</h3>
       <div class="container-radio">
         <span>
-          <input type="radio" id="Carli" name="channel" value="Carli" onchange="formatAndDisplayMessage()">
+          <input type="radio" id="Carli" name="channel" value="ai_carlig" onchange="formatAndDisplayMessage()">
           <label for="Carli">Carli</label>
         </span>
         <span>
-          <input type="radio" id="AiHeroes" name="channel" value="AiHeroes" onchange="formatAndDisplayMessage()">
+          <input type="radio" id="AiHeroes" name="channel" value="atheneaiheroes" onchange="formatAndDisplayMessage()">
           <label for="AiHeroes">AiHeroes</label>
         </span>
         <span>
-          <input type="radio" id="Santa" name="channel" value="Santa" onchange="formatAndDisplayMessage()">
+          <input type="radio" id="Santa" name="channel" value="ai_santa" onchange="formatAndDisplayMessage()">
           <label for="Santa">Santa</label>
         </span>
         <span>
-          <input type="radio" id="TrumpOrBiden" name="channel" value="TrumpOrBiden"
+          <input type="radio" id="TrumpOrBiden" name="channel" value="trumporbiden2024"
             onchange="formatAndDisplayMessage()">
           <label for="TrumpOrBiden">TrumpBiden</label>
         </span>
         <span>
-          <input type="radio" id="Jesus" name="channel" value="Jesus" onchange="formatAndDisplayMessage()">
+          <input type="radio" id="Jesus" name="channel" value="ask_jesus" onchange="formatAndDisplayMessage()">
           <label for="Jesus">Jesus</label>
         </span>
       </div>
@@ -41,7 +42,7 @@
 
     <div class="container-text-area">
       <label for="inputMessage">Input Message:</label>
-      <textarea class="dark-mode" id="inputMessage" rows="4" cols="50" oninput="formatAndDisplayMessage()"></textarea>
+      <textarea class="dark-mode" id="inputMessage" rows="4" cols="50" oninput="onInputHandler()"></textarea>
 
       <button class="button" id="pasteClipboard">Paste from Clipboard</button>
 
@@ -79,25 +80,31 @@
   </div>
 </body>
 
+
 <script>
   function formatAndDisplayMessage() {
-    var message = document.getElementById('inputMessage').value;
-    var channels = document.getElementsByName('channel');
-    var selectedChannel = '';
-    for (var channel of channels) {
+    const message = document.getElementById('inputMessage').value;
+    const channels = document.getElementsByName('channel');
+    let selectedChannel = '';
+    for (let channel of channels) {
       if (channel.checked) {
         selectedChannel = channel.value;
         break;
       }
     }
-
     // Use regex to extract user and message, and remove timestamp if present
-    var regex = /(?:\d+:\d+\s)?([^:]+): (.+)/;
-    var match = message.match(regex);
+    const regex = /(?:\d+:\d+\s)?([^:]+): (.+)/;
+    const match = message.match(regex);
     if (match) {
-      var user = match[1].trim();
-      var text = match[2].trim();
-      var formattedMessage = 'Channel: ' + selectedChannel + '\nUser: ' + user + '\nMessage: ' + text;
+      const user = match[1].trim();
+
+      // get roman username from: username(사용자 이름) or 使用者名稱(username)
+      const romanCharsInUserName = match[1].trim().match(/([A-Za-z0-9_]+)/);
+      const userName = romanCharsInUserName ? romanCharsInUserName[0] : user;
+
+      const text = match[2].trim();
+      const viewerCardLink = `https://www.twitch.tv/popout/${selectedChannel}/viewercard/${userName}`
+      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text} \nReason:`
       document.getElementById('outputMessage').value = formattedMessage;
       if (formattedMessage.includes('Channel:') && formattedMessage.includes('User:') && formattedMessage.includes('Message:')) {
         copyToClipboard();
@@ -107,8 +114,15 @@
     }
   }
 
+  let debounceTimeout;
+
+  function onInputHandler() {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(formatAndDisplayMessage, 2000);
+  }
+
   function copyToClipboard() {
-    var outputMessage = document.getElementById('outputMessage');
+    const outputMessage = document.getElementById('outputMessage');
     outputMessage.select();
     document.execCommand('copy');
 
@@ -156,7 +170,7 @@
   document.getElementById('darkModeToggle').addEventListener('change', toggleDarkMode)
 
   function showToastMessage() {
-    var toast = document.getElementById('toastMessage');
+    const toast = document.getElementById('toastMessage');
     toast.className = "show";
     setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000)
   }
