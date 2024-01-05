@@ -104,7 +104,7 @@
 
       const text = match[2].trim();
       const viewerCardLink = `https://www.twitch.tv/popout/${selectedChannel}/viewercard/${userName}`
-      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text} \nReason:`
+      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text} \nNote:`
       document.getElementById('outputMessage').value = formattedMessage;
       if (formattedMessage.includes('Channel:') && formattedMessage.includes('User:') && formattedMessage.includes('Message:')) {
         copyToClipboard();
