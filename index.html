@@ -55,7 +55,7 @@
       <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
     </div>
 
-    <div style="position: relative;">
+    <div style="display: flex; justify-content: center;">
       <div id="toastMessage">Copied to clipboard!</div>
     </div>
 
@@ -78,6 +78,7 @@
       <input type="checkbox" id="darkModeToggle" checked>
     </div>
   </div>
+
 </body>
 
 
@@ -104,7 +105,7 @@
 
       const text = match[2].trim();
       const viewerCardLink = `https://www.twitch.tv/popout/${selectedChannel}/viewercard/${userName}`
-      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text} \nNote:`
+      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text}`
       document.getElementById('outputMessage').value = formattedMessage;
       if (formattedMessage.includes('Channel:') && formattedMessage.includes('User:') && formattedMessage.includes('Message:')) {
         copyToClipboard();
@@ -119,6 +120,10 @@
   function onInputHandler() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(formatAndDisplayMessage, 350);
+  }
+
+  function resetTextArea() {
+    document.getElementById('inputMessage').value = '';
   }
 
   function copyToClipboard() {
