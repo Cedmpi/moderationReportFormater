@@ -1,1 +1,1 @@
-# [Chat message formatter](https://cedmpi.github.io/moderationReportFormater/)
+## [Online Demo](https://cedmpi.github.io/moderationReportFormater/)
