@@ -4,52 +4,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Message Formatter</title>
+  <title>Chat Message Formatter</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dark-mode">
   <div class="container">
-    <h1 class="border-b" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Message
+    <h1 class="border-b" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Chat
+      Message
       Formatter</h1>
 
-    <div class="border-b">
-      <h3 class="border-b" style="width: max-content;">Select Channel:</h3>
-      <div class="container-radio">
-        <span>
-          <input type="radio" id="Carli" name="channel" value="ai_carlig" onchange="formatAndDisplayMessage()">
-          <label for="Carli">Carli</label>
-        </span>
-        <span>
-          <input type="radio" id="AiHeroes" name="channel" value="atheneaiheroes" onchange="formatAndDisplayMessage()">
-          <label for="AiHeroes">AiHeroes</label>
-        </span>
-        <span>
-          <input type="radio" id="Santa" name="channel" value="ai_santa" onchange="formatAndDisplayMessage()">
-          <label for="Santa">Santa</label>
-        </span>
-        <span>
-          <input type="radio" id="TrumpOrBiden" name="channel" value="trumporbiden2024"
-            onchange="formatAndDisplayMessage()">
-          <label for="TrumpOrBiden">TrumpBiden</label>
-        </span>
-        <span>
-          <input type="radio" id="Jesus" name="channel" value="ask_jesus" onchange="formatAndDisplayMessage()">
-          <label for="Jesus">Jesus</label>
-        </span>
-      </div>
+    <div class="container-text-area">
+      <label for="channelName">Channel Name:</label>
+
+      <input type="text" class="dark-mode" id="channelName" style="padding: 0.5rem; border-radius: 0.5rem;"
+        oninput="onInputHandler(800)">
     </div>
 
     <div class="container-text-area">
-      <label for="inputMessage">Input Message:</label>
-      <textarea class="dark-mode" id="inputMessage" rows="4" cols="50" oninput="onInputHandler()"></textarea>
+      <label for="inputMessage">Chat Message:</label>
+      <textarea class="dark-mode" id="inputMessage" rows="8" cols="50" oninput="onInputHandler()"></textarea>
 
       <button class="button" id="pasteClipboard">Paste from Clipboard</button>
 
     </div>
 
     <div class="container-text-area">
-      <label for="outputMessage">Output Message:</label>
+      <label for="messageNote">Add Optional Note:</label>
+      <input type="text" class="dark-mode" id="messageNote" style="padding: 0.5rem; border-radius: 0.5rem;"
+        oninput="onInputHandler(800)">
+    </div>
+
+    <div class="container-text-area">
+      <label for="outputMessage">Formatted Message:</label>
       <textarea class="dark-mode" id="outputMessage" rows="6" cols="50" readonly></textarea>
 
       <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
@@ -86,13 +73,10 @@
   function formatAndDisplayMessage() {
     const message = document.getElementById('inputMessage').value;
     const channels = document.getElementsByName('channel');
-    let selectedChannel = '';
-    for (let channel of channels) {
-      if (channel.checked) {
-        selectedChannel = channel.value;
-        break;
-      }
-    }
+    const selectedChannel = document.getElementById('channelName').value;
+    const messageNote = document.getElementById('messageNote').value;
+
+    console.log(selectedChannel);
     // Use regex to extract user and message, and remove timestamp if present
     const regex = /(?:\d+:\d+\s)?([^:]+): (.+)/;
     const match = message.match(regex);
@@ -105,7 +89,11 @@
 
       const text = match[2].trim();
       const viewerCardLink = `https://www.twitch.tv/popout/${selectedChannel}/viewercard/${userName}`
-      const formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text}`
+      let formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text}`
+      if (messageNote.trim() !== '') {
+        formattedMessage += ` \nNote: ${messageNote}`;
+      }
+
       document.getElementById('outputMessage').value = formattedMessage;
       if (formattedMessage.includes('Channel:') && formattedMessage.includes('User:') && formattedMessage.includes('Message:')) {
         copyToClipboard();
@@ -117,9 +105,9 @@
 
   let debounceTimeout;
 
-  function onInputHandler() {
+  function onInputHandler(debounceMs = 500) {
     clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(formatAndDisplayMessage, 350);
+    debounceTimeout = setTimeout(formatAndDisplayMessage, debounceMs);
   }
 
   function resetTextArea() {
@@ -153,6 +141,7 @@
   function toggleDarkMode() {
     const isChecked = document.getElementById('darkModeToggle').checked;
     const textareas = document.querySelectorAll('textarea');
+    const inputs = document.querySelectorAll('input');
 
     if (isChecked) {
       document.body.classList.remove('light-mode');
@@ -162,6 +151,10 @@
         textarea.classList.remove('light-mode');
         textarea.classList.add('dark-mode');
       });
+      inputs.forEach(input => {
+        input.classList.remove('light-mode');
+        input.classList.add('dark-mode');
+      });
     } else {
       document.body.classList.remove('dark-mode');
       document.body.classList.add('light-mode');
@@ -170,6 +163,12 @@
         textarea.classList.remove('dark-mode');
         textarea.classList.add('light-mode');
       });
+
+      inputs.forEach(input => {
+        input.classList.remove('dark-mode');
+        input.classList.add('light-mode');
+      });
+
     }
   }
   document.getElementById('darkModeToggle').addEventListener('change', toggleDarkMode)
