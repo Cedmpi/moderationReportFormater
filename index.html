@@ -4,21 +4,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Message Formatter</title>
+  <title>Ban Request Formatter</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dark-mode">
   <div class="container">
-    <h1 class="border-b" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Chat
-      Message
-      Formatter</h1>
+    <h1 class="" style="text-align: center; width: max-content; margin-left: auto; margin-right: auto;">Auto Format Ban
+      Requests</h1>
+
 
     <div class="container-text-area">
-      <label for="channelName">Channel Name:</label>
-
+      <label for="channelName">Twitch Channel Name:</label>
+      <div style="font-size: small; user-select: none;"></div>
       <input type="text" class="dark-mode" id="channelName" style="padding: 0.5rem; border-radius: 0.5rem;"
-        oninput="onInputHandler(800)">
+        oninput="onInputHandler(800)" placeholder="link of twitch channel">
     </div>
 
     <div class="container-text-area">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="container-text-area">
-      <label for="outputMessage">Formatted Message:</label>
+      <label for="outputMessage">Formatted Message for Discord:</label>
       <textarea class="dark-mode" id="outputMessage" rows="10" cols="50" readonly></textarea>
 
       <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
@@ -76,7 +76,9 @@
     const selectedChannel = document.getElementById('channelName').value;
     const messageNote = document.getElementById('messageNote').value;
 
-    console.log(selectedChannel);
+    const channelName = getTwitchChannelNameFromUrl(selectedChannel);
+
+
     // Use regex to extract user and message, and remove timestamp if present
     const regex = /(?:\d+:\d+\s)?([^:]+): (.+)/;
     const match = message.match(regex);
@@ -88,8 +90,14 @@
       const userName = romanCharsInUserName ? romanCharsInUserName[0] : user;
 
       const text = match[2].trim();
+      const channelName = getTwitchChannelNameFromUrl(selectedChannel);
+
       const viewerCardLink = `https://www.twitch.tv/popout/${selectedChannel}/viewercard/${userName}`
-      let formattedMessage = `Channel: ${selectedChannel} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text}`
+      let formattedMessage = `User: ${user} \nMessage: ${text}`
+
+      if (channelName) {
+        formattedMessage = `Channel: ${channelName} \nUser: ${user} \n<${viewerCardLink}> \nMessage: ${text}`
+      }
       if (messageNote.trim() !== '') {
         formattedMessage += ` \nNote: ${messageNote}`;
       }
@@ -179,7 +187,11 @@
     setTimeout(function () { toast.className = toast.className.replace("show", ""); }, 3000)
   }
 
-
+  function getTwitchChannelNameFromUrl(url) {
+    const regex = /([^\/]+)\/?$/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  }
 
 </script>
 
