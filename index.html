@@ -15,56 +15,72 @@
 
 
     <div class="container-text-area">
-      <label for="channelName">Twitch Channel Name:</label>
+      <div>Select or paste Twitch channel</div>
       <div style="font-size: small; user-select: none;"></div>
+      <label for="channelName">Channel Name:</label>
       <input type="text" class="dark-mode" id="channelName" style="padding: 0.5rem; border-radius: 0.5rem;"
-        oninput="onInputHandler(800)" placeholder="link of twitch channel">
+       oninput="onInputHandler(800)" placeholder="e.g. https://www.twitch.tv/trumporbiden2024">
+
+      <div class="" style="margin-top: 1rem;">
+        <div class="" style="width: max-content;">Select Twitch Channel:</div>
+
+        <div class="container-radio">
+          <Button onclick="fillChannelName(Channel.AIHEROES); formatAndDisplayMessage();">
+            AiHeroes</Button>
+
+          <Button onclick="fillChannelName(Channel.TRUMPBIDEN); formatAndDisplayMessage();">
+            TrumpBiden</Button>
+
+          <Button onclick="fillChannelName(Channel.ASKJESUS); formatAndDisplayMessage();">
+            Jesus</Button>
+        </div>
+
+      </div>
+
+      <div class="container-text-area">
+        <label for="inputMessage">Chat Message:</label>
+        <textarea class="dark-mode" id="inputMessage" rows="8" cols="50" oninput="onInputHandler()"></textarea>
+
+        <button class="button" id="pasteClipboard">Paste from Clipboard</button>
+
+      </div>
+
+      <div class="container-text-area">
+        <label for="messageNote">Add Optional Note:</label>
+        <input type="text" class="dark-mode" id="messageNote" style="padding: 0.5rem; border-radius: 0.5rem;"
+          oninput="onInputHandler(800)">
+      </div>
+
+      <div class="container-text-area">
+        <label for="outputMessage">Formatted Message for Discord:</label>
+        <textarea class="dark-mode" id="outputMessage" rows="10" cols="50" readonly></textarea>
+
+        <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
+      </div>
+
+      <div style="display: flex; justify-content: center;">
+        <div id="toastMessage">Copied to clipboard!</div>
+      </div>
+
+      <div>
+        <hr>
+        <p>(Only outputs if message has text that match for Channel, User and Message.)</p>
+        <p>[Example Text Message] <br> 6:16 DeluluBroccoliConnoisseur: Dinos ate broccoli 🥦🦕 true and real.</p>
+        Output message:
+
+        <ul style="list-style: none;">
+          <li>Channel: [Select Channel]</li>
+          <li>User: DeluluBroccoliConnoisseur</li>
+          <li>Message: Dinos ate broccoli 🥦🦕 true and real.</li>
+        </ul>
+
+      </div>
+
+      <div>
+        <label for="darkModeToggle">Dark Mode:</label>
+        <input type="checkbox" id="darkModeToggle" checked>
+      </div>
     </div>
-
-    <div class="container-text-area">
-      <label for="inputMessage">Chat Message:</label>
-      <textarea class="dark-mode" id="inputMessage" rows="8" cols="50" oninput="onInputHandler()"></textarea>
-
-      <button class="button" id="pasteClipboard">Paste from Clipboard</button>
-
-    </div>
-
-    <div class="container-text-area">
-      <label for="messageNote">Add Optional Note:</label>
-      <input type="text" class="dark-mode" id="messageNote" style="padding: 0.5rem; border-radius: 0.5rem;"
-        oninput="onInputHandler(800)">
-    </div>
-
-    <div class="container-text-area">
-      <label for="outputMessage">Formatted Message for Discord:</label>
-      <textarea class="dark-mode" id="outputMessage" rows="10" cols="50" readonly></textarea>
-
-      <button class="button" onclick="copyToClipboard()">Copy to Clipboard</button>
-    </div>
-
-    <div style="display: flex; justify-content: center;">
-      <div id="toastMessage">Copied to clipboard!</div>
-    </div>
-
-    <div>
-      <hr>
-      <p>(Only outputs if message has text that match for Channel, User and Message.)</p>
-      <p>[Example Text Message] <br> 6:16 DeluluBroccoliConnoisseur: Dinos ate broccoli 🥦🦕 true and real.</p>
-      Output message:
-
-      <ul style="list-style: none;">
-        <li>Channel: [Select Channel]</li>
-        <li>User: DeluluBroccoliConnoisseur</li>
-        <li>Message: Dinos ate broccoli 🥦🦕 true and real.</li>
-      </ul>
-
-    </div>
-
-    <div>
-      <label for="darkModeToggle">Dark Mode:</label>
-      <input type="checkbox" id="darkModeToggle" checked>
-    </div>
-  </div>
 
 </body>
 
@@ -193,6 +209,15 @@
     return match ? match[1] : null;
   }
 
+  function fillChannelName(channelName) {
+    document.getElementById('channelName').value = channelName;
+  }
+
+  const Channel = {
+    TRUMPBIDEN: 'trumporbiden2024',
+    AIHEROES: 'atheneaiheroes',
+    ASKJESUS: 'ask_jesus'
+  };
 </script>
 
 </html>
