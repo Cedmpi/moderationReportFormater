@@ -24,16 +24,8 @@
       <div class="" style="margin-top: 1rem;">
         <div class="" style="width: max-content;">Select Twitch Channel:</div>
 
-        <div class="container-radio">
-          <Button onclick="fillChannelName(Channel.AIHEROES); formatAndDisplayMessage();">
-            AiHeroes</Button>
+        <div id="channelButtonContainer" class="container-radio"></div>
 
-          <Button onclick="fillChannelName(Channel.TRUMPKAMALA); formatAndDisplayMessage();">
-            TrumpKamala</Button>
-
-          <Button onclick="fillChannelName(Channel.ASKJESUS); formatAndDisplayMessage();">
-            Jesus</Button>
-        </div>
 
       </div>
 
@@ -214,10 +206,34 @@
   }
 
   const Channel = {
-    TRUMPKAMALA: 'trumporkamala2024',
-    AIHEROES: 'atheneaiheroes',
-    ASKJESUS: 'ask_jesus'
+    TRUMP_KAMALA: 'trumporkamala2024',
+    AI_HEROES: 'atheneaiheroes',
+    AI_JESUS: 'ask_jesus',
+    AI_SANTA : 'ai_santa',
   };
+
+
+function createChannelButtons(containerId) {
+  const container = document.getElementById(containerId);
+  
+  if (!container) {
+    console.error(`Container with id "${containerId}" not found.`);
+    return;
+  }
+
+  Object.keys(Channel).forEach(key => {
+    const button = document.createElement('button');
+    button.textContent = key.charAt(0) + key.slice(1).toLowerCase(); // Format key for readable text
+    button.onclick = () => {
+      fillChannelName(Channel[key]);
+      formatAndDisplayMessage();
+    };
+    container.appendChild(button);
+  });
+}
+
+createChannelButtons('channelButtonContainer');
+
 </script>
 
 </html>
